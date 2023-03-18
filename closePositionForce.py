@@ -1,5 +1,10 @@
-from settings import EXCHANGE_ID, EXCHANGE_CONFIG
 from my_functions import *
+
+pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
+pd.set_option('display.max_rows', 100)
+pd.set_option('display.max_columns', 100)
+pd.set_option("display.unicode.ambiguous_as_wide", True)
+pd.set_option("display.unicode.east_asian_width", True)
 
 
 print("如果需要清仓, 请加入'--close'参数")
