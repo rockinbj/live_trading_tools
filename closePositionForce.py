@@ -24,7 +24,7 @@ print(f"当前余额:\n{bal}\n")
 
 if len(sys.argv) == 2:
     if "--close" == sys.argv[1]:
-        print(f"\n\n\n正在执行清仓操作......")
+        print(f"\n\n\n正在执行清仓操作......\n")
         closePositionForce(ex, mkts, pos)
 
         pos = getOpenPosition(ex)
@@ -32,13 +32,13 @@ if len(sys.argv) == 2:
             ["side", "contracts", "notional", "unrealizedPnl", "percentage", "leverage", "entryPrice", "markPrice",
              "liquidationPrice", "marginType", "datetime"]]
         pos.sort_values("percentage", ascending=False, inplace=True)
-        print(f"当前持仓情况:\n{pos}")
+        print(f"清仓之后的持仓情况:\n{pos}")
         bal = getBalance(ex)
-        print(f"当前余额:\n{bal}")
+        print(f"清仓之后的余额:\n{bal}")
 
     elif "--close=" in sys.argv[1]:
         symbol = sys.argv[1].replace("--close=", "")
-        print(f"\n\n\n正在执行{symbol}的平仓操作.....")
+        print(f"\n\n\n正在执行{symbol}的平仓操作.....\n")
         closePositionForce(ex, mkts, pos, symbol)
 
         pos = getOpenPosition(ex)
@@ -46,6 +46,6 @@ if len(sys.argv) == 2:
             ["side", "contracts", "notional", "unrealizedPnl", "percentage", "leverage", "entryPrice", "markPrice",
              "liquidationPrice", "marginType", "datetime"]]
         pos.sort_values("percentage", ascending=False, inplace=True)
-        print(f"当前持仓情况:\n{pos}")
+        print(f"清仓之后的持仓情况:\n{pos}")
         bal = getBalance(ex)
-        print(f"当前余额:\n{bal}")
+        print(f"清仓之后的余额:\n{bal}")

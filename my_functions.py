@@ -183,6 +183,7 @@ def loadDataFromExchange(exchange):
 def saveDataToFile(unPnl, equity, positions):
     # return equityFile, positionFile
 
+    os.makedirs(str(DATA_PATH), exist_ok=True)
     equityFile = DATA_PATH / "equityFile.pkl"
     positionFile = DATA_PATH / "positionFile.pkl"
 
@@ -294,6 +295,8 @@ def sendReport(*args):
     msg += f"#### 页面杠杆 : {PAGE_LEVERAGE}\n"
     msg += f"#### 资金上限 : {MAX_BALANCE * 100}%\n"
     msg += f"#### 实际杠杆 : {round(PAGE_LEVERAGE * MAX_BALANCE, 2)}\n"
+    msg += f"#### 因子名称 : {FACTOR_NAME}\n"
+    msg += f"#### 因子参数 : {FACTOR_PARAMS}\n"
 
     sendMixin(msg, _type="PLAIN_POST")
 

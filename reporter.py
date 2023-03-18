@@ -8,10 +8,6 @@ pd.set_option("display.unicode.east_asian_width", True)
 logger = logging.getLogger("app.reptr")
 
 
-DATA_PATH = DB_PATH
-os.makedirs(DATA_PATH, exist_ok=True)
-
-
 def runReporter(exchange):
     unPnl, equity, accountPositions = loadDataFromExchange(exchange)
     equityFile, positionFile = saveDataToFile(unPnl, equity, accountPositions)

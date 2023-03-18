@@ -25,6 +25,8 @@ TEST_REPORT = True
 RUN_NAME = _config.RUN_NAME
 PAGE_LEVERAGE = _config.PAGE_LEVERAGE
 MAX_BALANCE = _config.MAX_BALANCE
+FACTOR_NAME = _config.factor_name
+FACTOR_PARAMS = _config.factor_params
 # ↑↑↑以上需配置↑↑↑
 
 EXCHANGE_ID = _exchange.EXCHANGE_ID
