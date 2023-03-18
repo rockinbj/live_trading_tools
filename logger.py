@@ -3,7 +3,6 @@ import sys
 from os import path
 
 from concurrent_log_handler import ConcurrentRotatingFileHandler
-from settings import LOG_LEVEL_CONSOLE, LOG_LEVEL_FILE, LOG_PATH
 
 # 定义log文件的存储路径和名称
 logPath = LOG_PATH
