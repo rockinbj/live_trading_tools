@@ -11,10 +11,14 @@ file_of_exchange_config = r"D:\Code\alpha_v7.0.5\src_product\exchangeConfig.py"
 # ↑↑↑以上需配置↑↑↑
 
 path_of_live_config, filename_of_live_config = os.path.split(file_of_live_config)
+path_of_exchange_config, filename_of_exchange_config = os.path.split(file_of_exchange_config)
 module_name_of_live_config, _ = os.path.splitext(filename_of_live_config)
+module_name_of_exchange_config, _ = os.path.splitext(filename_of_exchange_config)
 
 sys.path.append(path_of_live_config)
+sys.path.append(path_of_exchange_config)
 _config = importlib.import_module(module_name_of_live_config)
+_exchange = importlib.import_module(module_name_of_exchange_config)
 
 # ↓↓↓以下需配置↓↓↓
 TEST_REPORT = True
@@ -23,12 +27,12 @@ PAGE_LEVERAGE = _config.PAGE_LEVERAGE
 MAX_BALANCE = _config.MAX_BALANCE
 # ↑↑↑以上需配置↑↑↑
 
-EXCHANGE_ID = _config.EXCHANGE_ID
-EXCHANGE_CONFIG = _config.EXCHANGE_CONFIG
-MIXIN_TOKEN = _config.MIXIN_TOKEN
-CALLKEY = _config.CALLKEY
-SMMS_TOKEN = _config.SMMS_TOKEN
-CALL_ALARM = _config.CALL_ALARM
+EXCHANGE_ID = _exchange.EXCHANGE_ID
+EXCHANGE_CONFIG = _exchange.EXCHANGE_CONFIG
+MIXIN_TOKEN = _exchange.MIXIN_TOKEN
+CALLKEY = _exchange.CALLKEY
+SMMS_TOKEN = _exchange.SMMS_TOKEN
+CALL_ALARM = False
 REPORT_INTERVAL = _config.REPORT_INTERVAL
 LOG_PATH = "data/logs"
 LOG_LEVEL_CONSOLE = "debug"
