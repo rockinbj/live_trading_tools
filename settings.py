@@ -38,3 +38,7 @@ LOG_PATH = "data/logs"
 LOG_LEVEL_CONSOLE = "debug"
 LOG_LEVEL_FILE = "debug"
 DB_PATH = "data/db_files"
+
+if __name__ == '__main__':
+    print(EXCHANGE_ID)
+    print(RUN_NAME)
