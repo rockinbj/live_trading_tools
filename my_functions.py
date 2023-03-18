@@ -1,5 +1,6 @@
 import time
 import datetime as dt
+from pathlib import Path
 
 import ccxt
 import pandas as pd
@@ -8,9 +9,9 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mpl_dates
 
 from settings import *
-DATA_PATH = DB_PATH
 from logger import *
 logger = logging.getLogger("app.func")
+DATA_PATH = Path(DB_PATH)
 
 
 def sendMixin(msg, _type="PLAIN_TEXT"):
