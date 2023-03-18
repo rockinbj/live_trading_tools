@@ -17,6 +17,7 @@ mkts = ex.loadMarkets()
 pos = getOpenPosition(ex)
 pos = pos[["side", "contracts", "notional", "unrealizedPnl", "percentage", "leverage", "entryPrice", "markPrice",
            "liquidationPrice", "marginType", "datetime"]]
+pos.sort_values("percentage", ascending=False, inplace=True)
 print(f"当前持仓情况:\n{pos}\n")
 bal = getBalance(ex, asset="USDT")
 print(f"当前余额:\n{bal}\n")
@@ -30,6 +31,7 @@ if len(sys.argv) == 2:
         pos = pos[
             ["side", "contracts", "notional", "unrealizedPnl", "percentage", "leverage", "entryPrice", "markPrice",
              "liquidationPrice", "marginType", "datetime"]]
+        pos.sort_values("percentage", ascending=False, inplace=True)
         print(f"当前持仓情况:\n{pos}")
         bal = getBalance(ex)
         print(f"当前余额:\n{bal}")
@@ -43,6 +45,7 @@ if len(sys.argv) == 2:
         pos = pos[
             ["side", "contracts", "notional", "unrealizedPnl", "percentage", "leverage", "entryPrice", "markPrice",
              "liquidationPrice", "marginType", "datetime"]]
+        pos.sort_values("percentage", ascending=False, inplace=True)
         print(f"当前持仓情况:\n{pos}")
         bal = getBalance(ex)
         print(f"当前余额:\n{bal}")
