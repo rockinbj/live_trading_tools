@@ -2,6 +2,9 @@ import sys
 import os
 import importlib
 
+from logger import *
+logger = logging.getLogger("app.sett")
+
 
 # ↓↓↓以下需配置↓↓↓
 # 实盘config文件的绝对路径
@@ -40,5 +43,5 @@ LOG_LEVEL_FILE = "debug"
 DB_PATH = "data/db_files"
 
 if __name__ == '__main__':
-    print(EXCHANGE_ID)
-    print(RUN_NAME)
+    logger.debug(EXCHANGE_ID)
+    logger.debug(RUN_NAME)
