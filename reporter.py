@@ -1,3 +1,5 @@
+import time
+
 from my_functions import *
 
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
@@ -12,7 +14,6 @@ def runReporter(exchange):
     unPnl, equity, accountPositions = loadDataFromExchange(exchange)
     equityFile, positionFile = saveDataToFile(unPnl, equity, accountPositions)
 
-    # equityFile, positionFile = r"data/dbFiles/equityFile.pkl", r"data/dbFiles/positionFile.pkl"
     picFile = drawPic(equityFile, positionFile)
     picUrl = uploadPic(picFile)
     sendReport(unPnl, equity, accountPositions, picUrl)
@@ -24,11 +25,18 @@ def main():
     while True:
         sleepToClose(REPORT_INTERVAL, aheadSeconds=0, isTest=TEST_REPORT, offsetSec=-59)
 
-        runReporter(ex)
+        retryy(runReporter, "runReporter() in main()", exchange=ex)
 
         time.sleep(0.1)
         if TEST_REPORT: exit()
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        try:
+            main()
+        except Exception as e:
+            sendAndPrintError(f"日志模块主程序接到异常, 重新启动, 请尽快检查日志: {e}")
+            logger.exception(e)
+            time.sleep(10)
+            continue
