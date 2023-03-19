@@ -8,8 +8,8 @@ import requests
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpl_dates
 
-from settings import *
-from logger import *
+from my_settings import *
+from my_logger import *
 logger = logging.getLogger("app.func")
 DATA_PATH = Path(DB_PATH)
 

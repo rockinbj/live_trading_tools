@@ -42,7 +42,7 @@ LOG_LEVEL_FILE = "debug"
 DB_PATH = "data/db_files"
 
 if __name__ == '__main__':
-    from logger import *
+    from my_logger import *
     logger = logging.getLogger("app.sett")
     logger.debug(EXCHANGE_ID)
     logger.debug(RUN_NAME)
