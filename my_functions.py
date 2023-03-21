@@ -309,8 +309,8 @@ def drawPic(equityFile, posFile):
 
     # 找出最近持仓情况
     posDf = pd.read_pickle(posFile)
-    posDf["saveTime"] = pd.to_datetime(posDf["saveTime"], unit="s").dt.floor("s") + dt.timedelta(hours=8)
     posNow = posDf.loc[posDf["saveTime"] == posDf["saveTime"].max()]
+    posNow["saveTime"] = pd.to_datetime(posNow["saveTime"], unit="s").dt.floor("s") + dt.timedelta(hours=8)
     posNow = posNow.sort_values("percentage", ascending=False)
     posNow = posNow[[
         "symbol",
