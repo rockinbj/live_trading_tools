@@ -23,6 +23,8 @@ def sendMixin(msg, _type="PLAIN_TEXT"):
         'data': msg,
     }
 
+    msg = f"来自 {RUN_NAME}:\n" + msg
+
     try:
         r = requests.post(url, data=value, timeout=2).json()
     except Exception as err:
