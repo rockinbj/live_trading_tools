@@ -439,6 +439,7 @@ def upload_pic_imgbb(file):
         response = requests.post(url, params=params, data=data).json()
         if response["success"]:
             img_link = response["data"]["url"]
+            logger.debug(f"上传图片成功: {img_link}")
         else:
             img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
             logger.warning(f"图片上传失败: {response}")
