@@ -1,6 +1,7 @@
 import time
 import datetime as dt
 from pathlib import Path
+import base64
 
 import ccxt
 import pandas as pd
@@ -404,8 +405,12 @@ def drawPic(equityFile, posFile):
 
 
 def uploadPic(fileName):
-    headers = {"Authorization": SMMS_TOKEN}
-    files = {"smfile": open(fileName, "rb")}
+    return upload_pic_imgbb(fileName)
+
+
+def upload_pic_smms(file):
+    headers = {"Authorization": IMG_TOKEN}
+    files = {"smfile": open(file, "rb")}
     url = "https://smms.app/api/v2/upload"
     r = requests.post(url, files=files, headers=headers).json()
     if r["success"]:
@@ -416,6 +421,33 @@ def uploadPic(fileName):
         logger.warning(f"图片上传失败")
         logger.warning(r)
         return None
+
+
+def upload_pic_imgbb(file):
+    url = "https://api.imgbb.com/1/upload"
+    params = {
+        "expiration": (3600 * 24) * 15,
+        "key": IMG_TOKEN,
+    }
+
+    image_path = file
+    with open(image_path, "rb") as image_file:
+        b64 = base64.b64encode(image_file.read()).decode('utf-8')
+        data = {"image": b64}
+
+    try:
+        response = requests.post(url, params=params, data=data).json()
+        if response["success"]:
+            img_link = response["data"]["url"]
+        else:
+            img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+            logger.warning(f"图片上传失败: {response}")
+    except Exception as e:
+        img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+        logger.warning(f"图片上传失败")
+        logger.exception(e)
+
+    return img_link
 
 
 def nextStartTime(level, ahead_seconds=3, offsetSec=0):
