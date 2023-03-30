@@ -238,8 +238,7 @@ def sendReport(*args):
     logger.debug("开始发送报告")
     msg = f"### {RUN_NAME} - 策略报告\n\n"
     msg += f"#### 账户权益 : {equity}U\n"
-    # msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
-    msg += f'资金曲线 :\n<img src="{picUrl}" border="0">\n'
+    msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
 
     if pos.shape[0] > 0:
         pos.set_index("symbol", inplace=True)
@@ -439,7 +438,7 @@ def upload_pic_imgbb(file):
     try:
         response = requests.post(url, params=params, data=data).json()
         if response["success"]:
-            img_link = response["data"]["url"]
+            img_link = response["data"]["display_url"]
             logger.debug(f"上传图片成功: {img_link}")
         else:
             img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
