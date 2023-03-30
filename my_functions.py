@@ -238,7 +238,8 @@ def sendReport(*args):
     logger.debug("开始发送报告")
     msg = f"### {RUN_NAME} - 策略报告\n\n"
     msg += f"#### 账户权益 : {equity}U\n"
-    msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
+    # msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
+    msg += f'资金曲线 :\n<img src="{picUrl}" style="width: 100%; height: auto;" />\n'
 
     if pos.shape[0] > 0:
         pos.set_index("symbol", inplace=True)
@@ -313,6 +314,7 @@ def drawPic(equityFile, posFile):
     # 找出最近持仓情况
     posDf = pd.read_pickle(posFile)
     posNow = posDf.loc[posDf["saveTime"] == posDf["saveTime"].max()]
+    posNow = posNow.copy()
     posNow["datetime"] = pd.to_datetime(posNow["datetime"]) + dt.timedelta(hours=8)
     posNow = posNow.sort_values("percentage", ascending=False)
     posNow = posNow[[
