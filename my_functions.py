@@ -367,7 +367,7 @@ def drawPic(equityFile, posFile):
         xycoords="axes fraction",
         textcoords="offset pixels",
         xytext=(-100, 30),
-        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
+        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=0),
         color="white",
     )
     comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 回撤: {drawdown}\n\n" \
@@ -379,7 +379,7 @@ def drawPic(equityFile, posFile):
         xycoords="axes fraction",
         textcoords="offset pixels",
         xytext=(-100, 30),
-        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:black", lw=0),
+        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
         color="white",
     )
 
