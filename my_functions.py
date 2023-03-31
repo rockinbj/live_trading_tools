@@ -363,7 +363,7 @@ def drawPic(equityFile, posFile):
     title = f"{RUN_NAME} 策略 资金曲线"
     ax.annotate(
         title,
-        xy=(50, 95),
+        xy=(0.1, 0.2),
         xycoords="axes fraction",
         textcoords="offset pixels",
         xytext=(-100, 30),
