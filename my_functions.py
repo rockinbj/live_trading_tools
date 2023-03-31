@@ -416,7 +416,7 @@ def drawPic(equityFile, posFile):
 
 def uploadPic(fileName):
     error_pic = "https://img.doutuwang.com/9150e4e5gy1g1meedhyuqj20i006y3yk.jpg"
-    return upload_pic_smms(fileName, error_pic)
+    return upload_pic_smms(file=fileName, error_pic=error_pic)
 
 
 def upload_pic_smms(file, error_pic):
@@ -427,15 +427,15 @@ def upload_pic_smms(file, error_pic):
     try:
         r = requests.post(url, files=files, headers=headers).json()
         if r["success"]:
-            logger.debug(f"上传图片成功")
             img_link = r["data"]["url"]
+            logger.debug(f"上传图片成功: {img_link}")
         else:
-            logger.warning(f"图片上传失败")
-            logger.warning(r)
             img_link = error_pic
+            logger.warning(f"图片上传失败, 用error_pic代替")
+            logger.warning(r.text)
     except Exception as e:
         img_link = error_pic
-        logger.warning(f"图片上传失败")
+        logger.warning(f"图片上传失败, 用error_pic代替")
         logger.exception(e)
 
     return img_link
@@ -460,10 +460,10 @@ def upload_pic_imgbb(file, error_pic):
             logger.debug(f"上传图片成功: {img_link}")
         else:
             img_link = error_pic
-            logger.warning(f"图片上传失败: {response}")
+            logger.warning(f"图片上传失败, 用error_pic代替: {response}")
     except Exception as e:
         img_link = error_pic
-        logger.warning(f"图片上传失败")
+        logger.warning(f"图片上传失败, 用error_pic代替")
         logger.exception(e)
 
     return img_link
