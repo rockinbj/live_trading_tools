@@ -360,15 +360,16 @@ def drawPic(equityFile, posFile):
     fig.autofmt_xdate()
 
     # 图上标注文字
-    title = f"{RUN_NAME} 策略 资金曲线"
+    title = f"{RUN_NAME} 策略资金曲线"
     ax.annotate(
         title,
-        xy=(0.1, 0.2),
+        xy=(0.45, 0.92),
         xycoords="axes fraction",
         textcoords="offset pixels",
         xytext=(-100, 30),
         bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=0),
         color="white",
+        fontsize=20,
     )
     comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 回撤: {drawdown}\n\n" \
               f"持仓情况:\n" \
