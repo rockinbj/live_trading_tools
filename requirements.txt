@@ -1,1 +1,6 @@
 concurrent_log_handler==0.9.20
+
+ccxt==2.2.79
+pandas==1.4.3
+requests==2.26.0
+matplotlib==3.5.0

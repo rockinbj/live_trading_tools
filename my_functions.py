@@ -239,7 +239,6 @@ def sendReport(*args):
     msg = f"### {RUN_NAME} - 策略报告\n\n"
     msg += f"#### 账户权益 : {equity}U\n"
     msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
-    # msg += f'资金曲线 :\n<img src="{picUrl}" style="width: 100%; height: auto;" />\n'
 
     if pos.shape[0] > 0:
         pos.set_index("symbol", inplace=True)
@@ -358,10 +357,19 @@ def drawPic(equityFile, posFile):
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     plt.ylabel("USDT 余额 (包含未实现盈亏)")
-    plt.title(f"{RUN_NAME} 策略 资金曲线")
     fig.autofmt_xdate()
 
     # 图上标注文字
+    title = f"{RUN_NAME} 策略 资金曲线"
+    ax.annotate(
+        title,
+        xy=(50, 95),
+        xycoords="axes fraction",
+        textcoords="offset pixels",
+        xytext=(-100, 30),
+        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
+        color="white",
+    )
     comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 回撤: {drawdown}\n\n" \
               f"持仓情况:\n" \
               f"{posNow}"
@@ -371,7 +379,7 @@ def drawPic(equityFile, posFile):
         xycoords="axes fraction",
         textcoords="offset pixels",
         xytext=(-100, 30),
-        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
+        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:black", lw=0),
         color="white",
     )
 
@@ -407,25 +415,33 @@ def drawPic(equityFile, posFile):
 
 
 def uploadPic(fileName):
-    return upload_pic_imgbb(fileName)
+    error_pic = "https://img.doutuwang.com/9150e4e5gy1g1meedhyuqj20i006y3yk.jpg"
+    return upload_pic_smms(fileName, error_pic)
 
 
-def upload_pic_smms(file):
+def upload_pic_smms(file, error_pic):
     headers = {"Authorization": IMG_TOKEN}
     files = {"smfile": open(file, "rb")}
     url = "https://smms.app/api/v2/upload"
-    r = requests.post(url, files=files, headers=headers).json()
-    if r["success"]:
-        logger.debug(f"上传图片成功")
-        picUrl = r["data"]["url"]
-        return picUrl
-    else:
+
+    try:
+        r = requests.post(url, files=files, headers=headers).json()
+        if r["success"]:
+            logger.debug(f"上传图片成功")
+            img_link = r["data"]["url"]
+        else:
+            logger.warning(f"图片上传失败")
+            logger.warning(r)
+            img_link = error_pic
+    except Exception as e:
+        img_link = error_pic
         logger.warning(f"图片上传失败")
-        logger.warning(r)
-        return None
+        logger.exception(e)
+
+    return img_link
 
 
-def upload_pic_imgbb(file):
+def upload_pic_imgbb(file, error_pic):
     url = "https://api.imgbb.com/1/upload"
     params = {
         "expiration": (3600 * 24) * 15,
@@ -443,10 +459,10 @@ def upload_pic_imgbb(file):
             img_link = response["data"]["thumb"]["url"]
             logger.debug(f"上传图片成功: {img_link}")
         else:
-            img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+            img_link = error_pic
             logger.warning(f"图片上传失败: {response}")
     except Exception as e:
-        img_link = "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+        img_link = error_pic
         logger.warning(f"图片上传失败")
         logger.exception(e)
 
