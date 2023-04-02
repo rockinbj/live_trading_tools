@@ -8,6 +8,7 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpl_dates
+from matplotlib.ticker import FuncFormatter
 
 from my_settings import *
 from my_logger import *
@@ -201,6 +202,7 @@ def saveDataToFile(unPnl, equity, positions):
         index=[0]
     )
     equityDf = pd.concat([equityDf, newEquityRow], ignore_index=True)
+    equityDf["drawdown"] = equityDf["equity"] / equityDf["equity"].cummax() - 1
     equityDf.to_pickle(equityFile)
 
     # 保存position文件
@@ -238,7 +240,7 @@ def sendReport(*args):
     logger.debug("开始发送报告")
     msg = f"### {RUN_NAME} - 策略报告\n\n"
     msg += f"#### 账户权益 : {equity}U\n"
-    msg += f"资金曲线 :\n![equityPic.png]({picUrl})\n"
+    msg += f"![equityPic.png]({picUrl})\n"
 
     if pos.shape[0] > 0:
         pos.set_index("symbol", inplace=True)
@@ -334,10 +336,8 @@ def drawPic(equityFile, posFile):
     posNow.set_index("symbol", drop=True, inplace=True)
     posNow.index.name = None
 
-    # 计算最高点与现在的回撤
-    eq_now = eqDf.iloc[-1]["equity"]
-    eq_max = eqDf["equity"].max()
-    drawdown = eq_now / eq_max - 1
+    # 当前回撤
+    drawdown = eqDf.iloc[-1]["drawdown"]
     drawdown = f"{round(drawdown*100,1)}%"
 
     # 计算今日收益率
@@ -356,22 +356,19 @@ def drawPic(equityFile, posFile):
     ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green")
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
-    plt.ylabel("USDT 余额 (包含未实现盈亏)")
+    ax.set_ylabel("USDT 余额 (包含未实现盈亏)")
     fig.autofmt_xdate()
 
+    ax2 = ax.twinx()
+    ax2.set_ylim(0, -1)
+    ax2.invert_yaxis()  # 回撤的y轴反转
+    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color=(0.45, 0, 0))
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{100 * y:.0f}%'))
+    ax2.set_ylabel("回撤 (距最高点的跌幅)")
+
     # 图上标注文字
-    title = f"{RUN_NAME} 策略资金曲线"
-    ax.annotate(
-        title,
-        xy=(0.45, 0.92),
-        xycoords="axes fraction",
-        textcoords="offset pixels",
-        xytext=(-100, 30),
-        bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=0),
-        color="white",
-        fontsize=20,
-    )
-    comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 回撤: {drawdown}\n\n" \
+    ax.set_title(f"{RUN_NAME} 策略资金曲线", fontsize=20, color="white")
+    comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 当前回撤: {drawdown}\n\n" \
               f"持仓情况:\n" \
               f"{posNow}"
     ax.annotate(
@@ -389,9 +386,6 @@ def drawPic(equityFile, posFile):
     plt.rcParams['font.sans-serif'] = ["SimHei"]  # 中文San-serif字体
     plt.rcParams['axes.unicode_minus'] = False  # 解决负号'-'显示为方块的问题
 
-    # 去掉上边框和右边框
-    ax.spines['top'].set_color('none')
-    ax.spines['right'].set_color('none')
     # 调整plot.show()的空白边框
     plt.subplots_adjust(left=0.1, top=0.9, right=0.95, bottom=0.15)
 
@@ -400,11 +394,16 @@ def drawPic(equityFile, posFile):
     # 调整坐标轴的颜色和标签颜色
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
+    ax2.tick_params(axis='y', colors='white')
     ax.xaxis.label.set_color('white')
     ax.yaxis.label.set_color('white')
+    ax2.xaxis.label.set_color('white')
+    ax2.yaxis.label.set_color('white')
     # 设置 x 轴横线颜色和 y 轴竖线颜色
-    ax.spines['bottom'].set_color('white')
-    ax.spines['left'].set_color('white')
+    ax2.spines['bottom'].set_color('white')
+    ax2.spines['left'].set_color('white')
+    ax2.spines['top'].set_color('white')
+    ax2.spines['right'].set_color('white')
 
     fileName = DATA_PATH / "equityPic.jpg"
     logger.debug(f"保存资金曲线图片 {fileName}")
