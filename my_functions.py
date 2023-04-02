@@ -353,7 +353,7 @@ def drawPic(equityFile, posFile):
 
     # 画资金曲线
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
-    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金")
+    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     ax.set_ylabel("USDT 余额 (包含未实现盈亏)")
@@ -363,7 +363,7 @@ def drawPic(equityFile, posFile):
     ax2 = ax.twinx()
     ax2.set_ylim(0, -1)
     ax2.invert_yaxis()  # 回撤的y轴反转
-    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color="tab:red", label="回撤")
+    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color="tab:red", label="回撤(右Y轴)")
     ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{100 * y:.0f}%'))
     ax2.set_ylabel("回撤 (距最高点的跌幅)")
 
