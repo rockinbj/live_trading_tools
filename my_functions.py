@@ -353,16 +353,17 @@ def drawPic(equityFile, posFile):
 
     # 画资金曲线
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
-    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green")
+    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金")
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     ax.set_ylabel("USDT 余额 (包含未实现盈亏)")
     fig.autofmt_xdate()
 
+    # 画回撤曲线
     ax2 = ax.twinx()
     ax2.set_ylim(0, -1)
     ax2.invert_yaxis()  # 回撤的y轴反转
-    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color=(0.45, 0, 0))
+    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color=(0.45, 0, 0), label="回撤")
     ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{100 * y:.0f}%'))
     ax2.set_ylabel("回撤 (距最高点的跌幅)")
 
@@ -380,6 +381,13 @@ def drawPic(equityFile, posFile):
         bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
         color="white",
     )
+
+    # 设置图例
+    lines, labels = ax.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax.legend(lines + lines2, labels + labels2,
+              loc='center right', facecolor='black', edgecolor='gray', labelcolor="gray",
+              bbox_to_anchor=(0.96, 0.5))
 
     # 优化一些图片显示
     # 显示中文
