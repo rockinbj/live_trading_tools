@@ -440,7 +440,7 @@ def upload_pic_smms(file, error_pic):
         else:
             img_link = error_pic
             logger.warning(f"图片上传失败, 用error_pic代替")
-            logger.warning(r.text)
+            logger.warning(r)
     except Exception as e:
         img_link = error_pic
         logger.warning(f"图片上传失败, 用error_pic代替")
@@ -462,13 +462,13 @@ def upload_pic_imgbb(file, error_pic):
         data = {"image": b64}
 
     try:
-        response = requests.post(url, params=params, data=data).json()
-        if response["success"]:
-            img_link = response["data"]["thumb"]["url"]
+        r = requests.post(url, params=params, data=data).json()
+        if r["success"]:
+            img_link = r["data"]["thumb"]["url"]
             logger.debug(f"上传图片成功: {img_link}")
         else:
             img_link = error_pic
-            logger.warning(f"图片上传失败, 用error_pic代替: {response}")
+            logger.warning(f"图片上传失败, 用error_pic代替: {r}")
     except Exception as e:
         img_link = error_pic
         logger.warning(f"图片上传失败, 用error_pic代替")
