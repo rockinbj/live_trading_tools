@@ -1,0 +1,15 @@
+# copy this file to /etc/systemd/system/
+[Unit]
+Description=Trading Service Reporter
+
+[Service]
+Type=simple
+# anaconda python executor
+ExecStart=/opt/miniconda/envs/py38/bin/python /root/live_trading_tools/my_reporter.py
+Restart=always
+User=root
+# reporter working directory
+WorkingDirectory=/root/live_trading_tools
+
+[Install]
+WantedBy=multi-user.target
