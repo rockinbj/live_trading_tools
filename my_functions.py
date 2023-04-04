@@ -368,7 +368,7 @@ def drawPic(equityFile, posFile):
 
     # 图上标注文字
     ax.set_title(f"{RUN_NAME} 策略资金曲线", fontsize=20, color="white")
-    comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1}倍, 当前回撤: {drawdown:.1%}\n\n" \
+    comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1f}倍, 当前回撤: {drawdown:.1%}\n\n" \
               f"持仓情况:\n" \
               f"{posNow}"
     ax.annotate(
