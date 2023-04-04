@@ -310,7 +310,7 @@ def drawPic(equityFile, posFile):
     eqDf = pd.read_pickle(equityFile)
     eqDf["saveTime"] = pd.to_datetime(eqDf["saveTime"], unit="s").dt.floor("s") + dt.timedelta(hours=8)
     eqDf.sort_values("saveTime", inplace=True)
-    unPnl = eqDf.loc[eqDf["saveTime"] == eqDf["saveTime"].max(), "unPnl"].squeeze()
+    total_earn = eqDf["equity"].iloc[-1] / eqDf["equity"].iloc[0] - 1
 
     # 找出最近持仓情况
     posDf = pd.read_pickle(posFile)
@@ -338,22 +338,20 @@ def drawPic(equityFile, posFile):
 
     # 当前回撤
     drawdown = eqDf.iloc[-1]["drawdown"]
-    drawdown = f"{round(drawdown*100,1)}%"
 
     # 计算今日收益率
     eqDf_1d = eqDf.set_index("saveTime").resample("1D").last()
     day_pct = eqDf_1d["equity"].pct_change().iloc[-1]
-    day_pct = f"{round(day_pct*100,1)}%"
 
     # 计算年化收益率
     eq1d_first = eqDf_1d.iloc[0]["equity"]
     eq1d_now = eqDf_1d.iloc[-1]["equity"]
     annual_return = pow(eq1d_now/eq1d_first, 365/len(eqDf_1d)) - 1
-    annual_return = f"{round(annual_return,1)}倍"
 
     # 画资金曲线
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
     ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
+    ax.fill_between(eqDf["saveTime"], eqDf["equity"], ax.get_ylim()[0], color="darkgreen", alpha=0.2)
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     ax.set_ylabel("USDT 余额 (包含未实现盈亏)")
@@ -364,12 +362,13 @@ def drawPic(equityFile, posFile):
     ax2.set_ylim(0, -1)
     ax2.invert_yaxis()  # 回撤的y轴反转
     ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color="tab:red", label="回撤(右Y轴)")
+    ax2.fill_between(eqDf["saveTime"], 0, eqDf["drawdown"], color="darkred", alpha=0.2)
     ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{100 * y:.0f}%'))
     ax2.set_ylabel("回撤 (距最高点的跌幅)")
 
     # 图上标注文字
     ax.set_title(f"{RUN_NAME} 策略资金曲线", fontsize=20, color="white")
-    comment = f"总未实现盈亏: {unPnl}U, 今日盈亏: {day_pct}, 预期年化: {annual_return}, 当前回撤: {drawdown}\n\n" \
+    comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1}倍, 当前回撤: {drawdown:.1%}\n\n" \
               f"持仓情况:\n" \
               f"{posNow}"
     ax.annotate(
@@ -387,7 +386,7 @@ def drawPic(equityFile, posFile):
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax.legend(lines + lines2, labels + labels2,
               loc='center right', facecolor='black', edgecolor='white', labelcolor="white",
-              bbox_to_anchor=(0.96, 0.5))
+              bbox_to_anchor=(0.96, 0.09))
 
     # 优化一些图片显示
     # 显示中文
