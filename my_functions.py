@@ -189,12 +189,12 @@ def saveDataToFile(unPnl, equity, positions):
     # return equityFile, positionFile
 
     os.makedirs(str(DATA_PATH), exist_ok=True)
-    equityFile = DATA_PATH / "equityFile.pkl"
-    positionFile = DATA_PATH / "positionFile.pkl"
+    equityFile = DATA_PATH / "equityFile.csv"
+    positionFile = DATA_PATH / "positionFile.csv"
 
     # 保存equity文件
     if os.path.isfile(equityFile):
-        equityDf = pd.read_pickle(equityFile)
+        equityDf = pd.read_csv(equityFile)
     else:
         equityDf = pd.DataFrame(columns=["equity", "unPnl", "saveTime"])
 
@@ -204,11 +204,11 @@ def saveDataToFile(unPnl, equity, positions):
     )
     equityDf = pd.concat([equityDf, newEquityRow], ignore_index=True)
     equityDf["drawdown"] = equityDf["equity"] / equityDf["equity"].cummax() - 1
-    equityDf.to_pickle(equityFile)
+    equityDf.to_csv(equityFile)
 
     # 保存position文件
     if os.path.isfile(positionFile):
-        positionDf = pd.read_pickle(positionFile)
+        positionDf = pd.read_csv(positionFile)
     else:
         positionDf = pd.DataFrame(columns=[
             "symbol",
@@ -229,7 +229,7 @@ def saveDataToFile(unPnl, equity, positions):
 
     positions["saveTime"] = time.time()
     positionDf = pd.concat([positionDf, positions], ignore_index=True)
-    positionDf.to_pickle(positionFile)
+    positionDf.to_csv(positionFile)
 
     return equityFile, positionFile
 
@@ -309,8 +309,8 @@ def sendReport(*args):
 
 def drawPic(equityFile, posFile):
     # 读取数据文件
-    eqDf = pd.read_pickle(equityFile)
-    posDf = pd.read_pickle(posFile)
+    eqDf = pd.read_csv(equityFile)
+    posDf = pd.read_csv(posFile)
 
     # 计算资金曲线
     eqDf["saveTime"] = pd.to_datetime(eqDf["saveTime"], unit="s").dt.floor("s") + dt.timedelta(hours=8)
