@@ -4,6 +4,7 @@ from pathlib import Path
 import base64
 
 import ccxt
+import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
@@ -354,8 +355,10 @@ def drawPic(equityFile, posFile):
     annual_return = pow(eq1d_now/eq1d_first, 365/len(eqDf_1d)) - 1
 
     # 画资金曲线
+    saveTime_np = eqDf["saveTime"].to_numpy(dtype=np.float64)
+    equity_np = eqDf["equity"].to_numpy(dtype=np.float64)
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
-    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
+    ax.plot(saveTime_np, equity_np, color="tab:green", label="资金(左Y轴)")
     ax.fill_between(eqDf["saveTime"], eqDf["equity"], ax.get_ylim()[0], color="darkgreen", alpha=0.26)
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
