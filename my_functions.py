@@ -194,21 +194,21 @@ def saveDataToFile(unPnl, equity, positions):
 
     # 保存equity文件
     if os.path.isfile(equityFile):
-        equityDf = pd.read_csv(equityFile)
+        equityDf = pd.read_csv(equityFile, parse_dates=["saveTime"])
     else:
-        equityDf = pd.DataFrame(columns=["equity", "unPnl", "saveTime"])
+        equityDf = pd.DataFrame(columns=["equity", "unPnl", "saveTime", "drawdown"])
 
     newEquityRow = pd.DataFrame(
-        {"equity": equity, "unPnl": unPnl, "saveTime": time.time()},
+        {"equity": equity, "unPnl": unPnl, "saveTime": time.time(), "drawdown": 0.0},
         index=[0]
     )
     equityDf = pd.concat([equityDf, newEquityRow], ignore_index=True)
     equityDf["drawdown"] = equityDf["equity"] / equityDf["equity"].cummax() - 1
-    equityDf.to_csv(equityFile)
+    equityDf.to_csv(equityFile, index=False)
 
     # 保存position文件
     if os.path.isfile(positionFile):
-        positionDf = pd.read_csv(positionFile)
+        positionDf = pd.read_csv(positionFile, parse_dates=["saveTime"])
     else:
         positionDf = pd.DataFrame(columns=[
             "symbol",
@@ -229,7 +229,7 @@ def saveDataToFile(unPnl, equity, positions):
 
     positions["saveTime"] = time.time()
     positionDf = pd.concat([positionDf, positions], ignore_index=True)
-    positionDf.to_csv(positionFile)
+    positionDf.to_csv(positionFile, index=False)
 
     return equityFile, positionFile
 
@@ -309,8 +309,8 @@ def sendReport(*args):
 
 def drawPic(equityFile, posFile):
     # 读取数据文件
-    eqDf = pd.read_csv(equityFile)
-    posDf = pd.read_csv(posFile)
+    eqDf = pd.read_csv(equityFile, parse_dates=["saveTime"])
+    posDf = pd.read_csv(posFile, parse_dates=["saveTime"])
 
     # 计算资金曲线
     eqDf["saveTime"] = pd.to_datetime(eqDf["saveTime"], unit="s").dt.floor("s") + dt.timedelta(hours=8)
