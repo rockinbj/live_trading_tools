@@ -378,7 +378,7 @@ def drawPic(equityFile, posFile):
 
     if len(posNow) > 5:
         comment += f"{posNowShort}"
-        comment += f"\n…………{len(posNow) - 5} Lines More…………"
+        comment += f"\n………… {len(posNow) - 5} Lines More …………"
     else:
         comment += f"{posNow}"
 
