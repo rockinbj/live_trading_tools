@@ -332,9 +332,9 @@ def drawPic(equityFile, posFile):
     ]]
     posNow.rename(columns={
         "side": "方向",
-        "notional": "持仓价值",
-        "percentage": "盈亏比",
-        "unrealizedPnl": "未实现盈亏",
+        "notional": "持仓价值(U)",
+        "percentage": "涨跌幅(%)",
+        "unrealizedPnl": "未实现盈亏(U)",
         "datetime": "开仓时间",
     }, inplace=True)
     posNow.set_index("symbol", drop=True, inplace=True)
@@ -342,8 +342,9 @@ def drawPic(equityFile, posFile):
     if len(posNow) > 5:
         posNowShort = posNow.head(5)
 
-    # 当前回撤
+    # 当前回撤、最大回撤
     drawdown = eqDf.iloc[-1]["drawdown"]
+    drawdown_max = eqDf["drawdown"].max()
 
     # 计算今日收益率
     eqDf_1d = eqDf.set_index("saveTime").resample("1D").last()
@@ -355,14 +356,12 @@ def drawPic(equityFile, posFile):
     annual_return = pow(eq1d_now/eq1d_first, 365/len(eqDf_1d)) - 1
 
     # 画资金曲线
-    # saveTime_np = eqDf["saveTime"].to_numpy(dtype=np.float64)
-    # equity_np = eqDf["equity"].to_numpy(dtype=np.float64)
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
     ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
     ax.fill_between(eqDf["saveTime"], eqDf["equity"], ax.get_ylim()[0], color="darkgreen", alpha=0.26)
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
-    ax.set_ylabel("USDT 余额 (包含未实现盈亏)")
+    ax.set_ylabel("账户余额(U) (包含未实现盈亏)")
     fig.autofmt_xdate()
 
     # 画回撤曲线
@@ -376,7 +375,8 @@ def drawPic(equityFile, posFile):
 
     # 图上标注文字
     ax.set_title(f"{RUN_NAME} 策略资金曲线", fontsize=20, color="white")
-    comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1f}倍, 当前回撤: {drawdown:.1%}\n\n" \
+    comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1f}倍, " \
+              f"最大回撤: {drawdown_max:.1%}, 当前回撤: {drawdown:.1%}\n\n" \
               f"持仓情况:\n"
 
     if len(posNow) > 5:
