@@ -380,11 +380,9 @@ def drawPic(equityFile, posFile):
               f"持仓情况:\n"
 
     if len(posNow) > 5:
-        posNowShort.style.set_properties(**{'text-align': 'center'})  # 列居中对齐
         comment += f"{posNowShort}"
         comment += f"\n………… {len(posNow) - 5} Lines More …………"
     else:
-        posNow.style.set_properties(**{'text-align': 'center'})
         comment += f"{posNow}"
 
     ax.annotate(
@@ -395,6 +393,7 @@ def drawPic(equityFile, posFile):
         xytext=(-100, 30),
         bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
         color="white",
+        horizontalalignment='center',
     )
 
     # 设置图例
