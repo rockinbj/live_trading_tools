@@ -344,7 +344,7 @@ def drawPic(equityFile, posFile):
 
     # 当前回撤、最大回撤
     drawdown = eqDf.iloc[-1]["drawdown"]
-    drawdown_max = eqDf["drawdown"].max()
+    drawdown_max = eqDf["drawdown"].min()
 
     # 计算今日收益率
     eqDf_1d = eqDf.set_index("saveTime").resample("1D").last()
@@ -355,21 +355,28 @@ def drawPic(equityFile, posFile):
     eq1d_now = eqDf_1d.iloc[-1]["equity"]
     annual_return = pow(eq1d_now/eq1d_first, 365/len(eqDf_1d)) - 1
 
+    sma_len = 8  # 曲线平滑度
     # 画资金曲线
+    eq = eqDf["equity"].rolling(sma_len, min_periods=1).mean()  # 曲线平滑
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
-    ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
-    ax.fill_between(eqDf["saveTime"], eqDf["equity"], ax.get_ylim()[0], color="darkgreen", alpha=0.26)
+    # ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
+    ax.plot(eqDf["saveTime"], eq, color="tab:green", label="资金(左Y轴)")
+    # ax.fill_between(eqDf["saveTime"], eqDf["equity"], ax.get_ylim()[0], color="darkgreen", alpha=0.26)
+    ax.fill_between(eqDf["saveTime"], eq, ax.get_ylim()[0], color="darkgreen", alpha=0.26)
     ax.xaxis.set_major_formatter(mpl_dates.DateFormatter('%Y-%m-%d %H:%M:%S'))  # 调整时间轴格式
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     ax.set_ylabel("账户余额(U) (包含未实现盈亏)")
     fig.autofmt_xdate()
 
     # 画回撤曲线
+    dd = eqDf["drawdown"].rolling(sma_len, min_periods=1).mean()
     ax2 = ax.twinx()
     ax2.set_ylim(0, -1)
     ax2.invert_yaxis()  # 回撤的y轴反转
-    ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color="tab:red", label="回撤(右Y轴)")
-    ax2.fill_between(eqDf["saveTime"], 0, eqDf["drawdown"], color="darkred", alpha=0.26)
+    # ax2.plot(eqDf["saveTime"], eqDf["drawdown"], color="tab:red", label="回撤(右Y轴)")
+    ax2.plot(eqDf["saveTime"], dd, color="tab:red", label="回撤(右Y轴)")
+    # ax2.fill_between(eqDf["saveTime"], 0, eqDf["drawdown"], color="darkred", alpha=0.26)
+    ax2.fill_between(eqDf["saveTime"], 0, dd, color="darkred", alpha=0.26)
     ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{100 * y:.0f}%'))
     ax2.set_ylabel("回撤 (距最高点的跌幅)")
 
