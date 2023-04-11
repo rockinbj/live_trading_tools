@@ -393,7 +393,6 @@ def drawPic(equityFile, posFile):
         xytext=(-100, 30),
         bbox=dict(boxstyle="square,pad=0.3", fc="black", ec="tab:green", lw=1),
         color="white",
-        horizontalalignment='center',
     )
 
     # 设置图例
