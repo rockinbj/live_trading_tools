@@ -363,7 +363,7 @@ def drawPic(equityFile, posFile):
     drawdown_max = eqDf["drawdown"].min()
 
     # 计算今日收益率
-    eqDf_1d = eqDf.set_index("saveTime").resample("1D").last()
+    eqDf_1d = eqDf.sort_values("saveTime").set_index("saveTime").resample("1D").last()
     day_pct = eqDf_1d["equity"].pct_change().iloc[-1]
 
     # 计算年化收益率
