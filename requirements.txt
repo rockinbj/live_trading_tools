@@ -6,5 +6,4 @@ dataframe_image==0.1.10
 lxml==4.9.2
 
 # install chromium
-# dnf install -y epel-release
-# dnf install -y chromium
+# dnf install -y epel-release && dnf install -y chromium
