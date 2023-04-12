@@ -4,3 +4,4 @@ ccxt==2.2.79
 pandas==1.4.3
 requests==2.26.0
 matplotlib==3.5.0
+dataframe_image==0.1.10
