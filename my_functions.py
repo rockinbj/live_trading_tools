@@ -10,9 +10,12 @@ import requests
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpl_dates
 from matplotlib.ticker import FuncFormatter
+import dataframe_image as dfi
 
 from my_settings import *
 from my_logger import *
+from styler_css import *
+
 logger = logging.getLogger("app.func")
 DATA_PATH = Path(DB_PATH)
 
@@ -238,19 +241,25 @@ def sendReport(*args):
     [unPnl, equity, posOri, picUrl] = args
     pos = posOri.copy()
 
-    logger.debug("开始发送报告")
+    logger.debug("开始生成报告")
     msg = f"### {RUN_NAME} - 策略报告\n\n"
     msg += f"#### 账户权益 : {equity}U\n"
+    msg += f"#### 账户盈亏 : {unPnl}U\n"
+
+    # 插入 资金曲线 图
     msg += f"![equityPic.png]({picUrl})\n"
+
+    # 绘制持仓信息表格
+    msg += f"#### 持仓信息 :\n"
 
     if pos.shape[0] > 0:
         pos.set_index("symbol", inplace=True)
         pos = pos[
             [
                 "side",
-                "notional",
                 "percentage",
                 "unrealizedPnl",
+                "notional",
                 "entryPrice",
                 "markPrice",
                 "liquidationPrice",
@@ -265,7 +274,7 @@ def sendReport(*args):
             columns={
                 "side": "持仓方向",
                 "notional": "持仓价值(U)",
-                "percentage": "盈亏比例(%)",
+                "percentage": "盈亏幅度",
                 "unrealizedPnl": "未实现盈亏(U)",
                 "entryPrice": "开仓价格(U)",
                 "markPrice": "当前价格(U)",
@@ -275,29 +284,35 @@ def sendReport(*args):
             },
             inplace=True,
         )
+        pos.sort_values(by="盈亏幅度", ascending=False, inplace=True)
 
-        pos.sort_values(by="盈亏比例(%)", ascending=False, inplace=True)
-        d = pos.to_dict(orient="index")
+        table_pic_file = DATA_PATH / 'dataframe_image.jpg'
+        pos_copy = pos.reset_index().rename(columns={"symbol": "持仓币种"})
 
-        msg += f"#### 账户盈亏 : {unPnl}U\n"
-        msg += f'#### 当前持币 : {", ".join([i.split("/")[0] for i in list(d.keys())])}'
+        df_styled = (
+            pos_copy.style
+            .format({
+                "持仓价值(U)": "{:.1f}",
+                "盈亏幅度": "{:.1f}%",
+                "未实现盈亏(U)": "{:.1f}",
+                "开仓价格(U)": "{:.4f}",
+                "当前价格(U)": "{:.4f}",
+                "爆仓价格(U)": "{:.4f}",
+                "页面杠杆": "{:.0f}",
+            })
+            .hide(axis='index')
+            .set_table_styles([headers, left_header_border, right_header_border] + rows)
+        )
 
-        for k, v in d.items():
-            msg += f"""
-##### {k.split("/")[0]}
-- 持仓方向    : {v["持仓方向"]}
-- 持仓价值(U) : {v["持仓价值(U)"]}
-- 盈亏比例(%) : {v["盈亏比例(%)"]}
-- 未实现盈亏(U) : {v["未实现盈亏(U)"]}
-- 开仓价格(U) : {v["开仓价格(U)"]}
-- 当前价格(U) : {v["当前价格(U)"]}
-- 爆仓价格(U) : {v["爆仓价格(U)"]}
-- 开仓时间 : {v["开仓时间"]}
-- 页面杠杆 : {v["页面杠杆"]}
-"""
+        dfi.export(df_styled, table_pic_file, table_conversion='chrome')
+        picUrl = uploadPic(table_pic_file)
+
+        msg += f"![持仓表格]({picUrl})\n"
+
     else:
-        msg += "#### 当前空仓\n"
+        msg += f"当前空仓\n"
 
+    # 插入 策略配置 等信息
     msg += f"#### 页面杠杆 : {PAGE_LEVERAGE}\n"
     msg += f"#### 资金上限 : {MAX_BALANCE * 100}%\n"
     msg += f"#### 实际杠杆 : {round(PAGE_LEVERAGE * MAX_BALANCE, 2)}\n"
