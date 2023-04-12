@@ -320,6 +320,7 @@ def sendReport(*args):
     msg += f"#### 因子参数 : {FACTOR_PARAMS}\n"
 
     sendMixin(msg, _type="PLAIN_POST")
+    logger.debug(f"====== 发送报告完成 ======")
 
 
 def drawPic(equityFile, posFile):
