@@ -163,8 +163,8 @@ def loadDataFromExchange(exchange):
     positions = getOpenPosition(exchange)
 
     # 获取余额
-    total["totalMarginBalance"] = total["totalMarginBalance"].astype(float).round(2)
-    total["totalCrossUnPnl"] = total["totalCrossUnPnl"].astype(float).round(2)
+    total["totalMarginBalance"] = total["totalMarginBalance"].astype(float)
+    total["totalCrossUnPnl"] = total["totalCrossUnPnl"].astype(float)
     equity = total.iloc[0]["totalMarginBalance"]
     unPnl = total.iloc[0]["totalCrossUnPnl"]
 
@@ -177,7 +177,7 @@ def loadDataFromExchange(exchange):
             "notional", "percentage",
             "unrealizedPnl", "entryPrice",
             "markPrice", "liquidationPrice"]]\
-            .astype(float).round(2)
+            .astype(float)
     positions["datetime"] = pd.to_datetime(positions["datetime"])
     positions["datetime"] = positions["datetime"].dt.strftime('%Y-%m-%d %H:%M:%S')
     positions['timestamp'] = positions['timestamp'].values.astype('int64') // 10 ** 6
