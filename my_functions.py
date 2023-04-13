@@ -243,8 +243,8 @@ def sendReport(*args):
 
     logger.debug("开始生成报告")
     msg = f"### {RUN_NAME} - 策略报告\n\n"
-    msg += f"#### 账户权益 : {equity}U\n"
-    msg += f"#### 账户盈亏 : {unPnl}U\n"
+    msg += f"#### 账户权益 : {equity:.1f}U\n"
+    msg += f"#### 账户盈亏 : {unPnl:.1f}U\n"
 
     # 插入 资金曲线 图
     msg += f"![equityPic.png]({picUrl})\n"
@@ -341,22 +341,20 @@ def drawPic(equityFile, posFile):
     posNow = posNow[[
         "symbol",
         "side",
-        "notional",
         "percentage",
         "unrealizedPnl",
+        "notional",
         "datetime",
     ]]
     posNow.rename(columns={
         "side": "方向",
         "notional": "持仓价值(U)",
-        "percentage": "涨跌幅(%)",
+        "percentage": "盈亏幅度",
         "unrealizedPnl": "未实现盈亏(U)",
         "datetime": "开仓时间",
     }, inplace=True)
     posNow.set_index("symbol", drop=True, inplace=True)
     posNow.index.name = None
-    if len(posNow) > 5:
-        posNowShort = posNow.head(5)
 
     # 当前回撤、最大回撤
     drawdown = eqDf.iloc[-1]["drawdown"]
@@ -364,7 +362,8 @@ def drawPic(equityFile, posFile):
 
     # 计算今日收益率
     eqDf_1d = eqDf.sort_values("saveTime").set_index("saveTime").resample("1D").last()
-    day_pct = eqDf_1d["equity"].pct_change().iloc[-1]
+    eqDf_1d["day_pct"] = eqDf_1d["equity"].pct_change()
+    day_pct = eqDf_1d["day_pct"].iloc[-1]
 
     # 计算年化收益率
     eq1d_first = eqDf_1d.iloc[0]["equity"]
@@ -400,13 +399,24 @@ def drawPic(equityFile, posFile):
     ax.set_title(f"{RUN_NAME} 策略资金曲线", fontsize=20, color="white")
     comment = f"累计盈亏: {total_earn:.1%}, 今日盈亏: {day_pct:.1%}, 预期年化: {annual_return:.1f}倍, " \
               f"最大回撤: {drawdown_max:.1%}, 当前回撤: {drawdown:.1%}\n\n" \
-              f"持仓情况:\n"
+              f"持仓摘要:\n"
 
-    if len(posNow) > 5:
+    if len(posNow) > 2:
+        # 修理posNow的数值精度，给“盈亏幅度”挂上%
+        # 最多只显示2行
+        posNowShort = (
+            posNow.head(2)
+            .round({"持仓价值(U)": 2, "未实现盈亏(U)": 2, "盈亏幅度": 1})
+            .assign(**{"盈亏幅度": lambda x: x["盈亏幅度"].map(lambda a: f"{a:.1f}%")})
+        )
         comment += f"{posNowShort}"
-        comment += f"\n………… {len(posNow) - 5} Lines More …………"
+        comment += f"\n………… {len(posNow) - 2} Lines More …………"
     else:
-        comment += f"{posNow}"
+        _ = (
+            posNow.round({"持仓价值(U)": 2, "未实现盈亏(U)": 2, "盈亏幅度": 1})
+            .assign(**{"盈亏幅度": lambda x: x["盈亏幅度"].map(lambda a: f"{a:.1f}%")})
+        )
+        comment += f'{_}'
 
     ax.annotate(
         comment,
