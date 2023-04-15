@@ -2,6 +2,7 @@ import time
 import datetime as dt
 from pathlib import Path
 import base64
+from random import randint
 
 import ccxt
 import numpy as np
@@ -382,6 +383,7 @@ def drawPic(equityFile, posFile):
     ax.xaxis.set_major_locator(mpl_dates.AutoDateLocator())
     ax.set_ylabel("账户余额(U) (包含未实现盈亏)")
     fig.autofmt_xdate()
+    # ax.set_yscale("log")  # 画对数曲线
 
     # 画回撤曲线
     dd = eqDf["drawdown"].rolling(sma_len, min_periods=1).mean()
@@ -469,7 +471,7 @@ def drawPic(equityFile, posFile):
 
 
 def uploadPic(fileName):
-    error_pic = "https://img.doutuwang.com/9150e4e5gy1g1meedhyuqj20i006y3yk.jpg"
+    error_pic = f"https://picsum.photos/600/300?random={randint(1,10)}"
     return upload_pic_smms(file=fileName, error_pic=error_pic)
 
 
@@ -492,6 +494,7 @@ def upload_pic_smms(file, error_pic):
         logger.warning(f"图片上传失败, 用error_pic代替")
         logger.exception(e)
 
+    # img_link = error_pic
     return img_link
 
 
