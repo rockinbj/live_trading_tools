@@ -5,7 +5,6 @@ import base64
 from random import randint
 
 import ccxt
-import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
@@ -371,7 +370,7 @@ def drawPic(equityFile, posFile):
     eq1d_now = eqDf_1d.iloc[-1]["equity"]
     annual_return = pow(eq1d_now/eq1d_first, 365/len(eqDf_1d)) - 1
 
-    sma_len = 8  # 曲线平滑度
+    sma_len = 8 if SMOOTH_LINE else 1  # 曲线平滑度
     # 画资金曲线
     eq = eqDf["equity"].rolling(sma_len, min_periods=1).mean()  # 曲线平滑
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')

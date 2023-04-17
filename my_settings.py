@@ -25,8 +25,9 @@ TEST_REPORT = True
 RUN_NAME = _config.RUN_NAME
 PAGE_LEVERAGE = _config.PAGE_LEVERAGE
 MAX_BALANCE = _config.MAX_BALANCE
-FACTOR_NAME = _config.factor_name
-FACTOR_PARAMS = _config.factor_params
+REAL_LEVERAGE = PAGE_LEVERAGE * MAX_BALANCE
+FACTOR_NAME = _config.strategy_list[0]["factors"]
+FACTOR_PARAMS = _config.strategy_list[0]["hold_period"]
 # ↑↑↑以上需配置↑↑↑
 
 EXCHANGE_ID = _exchange.EXCHANGE_ID
@@ -34,12 +35,14 @@ EXCHANGE_CONFIG = _exchange.EXCHANGE_CONFIG
 MIXIN_TOKEN = _exchange.MIXIN_TOKEN
 CALLKEY = _exchange.CALLKEY
 IMG_TOKEN = _exchange.IMG_TOKEN
+SMOOTH_LINE = True
 CALL_ALARM = False
 REPORT_INTERVAL = "30m"
+DB_PATH = "data/db_files"
 LOG_PATH = "data/logs"
 LOG_LEVEL_CONSOLE = "debug"
 LOG_LEVEL_FILE = "debug"
-DB_PATH = "data/db_files"
+
 
 if __name__ == '__main__':
     from my_logger import *
