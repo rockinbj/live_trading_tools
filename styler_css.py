@@ -9,25 +9,25 @@ headers = {
         ('border-top', '1px solid green'),
         ('text-align', 'center'),
         ('border-left', 'none'),
-        ('border-right', 'none')
-    ]
+        ('border-right', 'none'),
+    ],
 }
 
 left_header_border = {
     'selector': 'th.col_heading:first-child',
-    'props': [('border-left', '1px solid green')]
+    'props': [('border-left', '1px solid green')],
 }
 
 right_header_border = {
     'selector': 'th.col_heading:last-child',
-    'props': [('border-right', '1px solid green')]
+    'props': [('border-right', '1px solid green')],
 }
 
 alternate_rows = {
     'selector': 'tbody tr:nth-child(even)',
     'props': [
-        ('background-color', 'rgba(0, 30, 10)')
-    ]
+        ('background-color', 'rgba(0, 30, 10)'),
+    ],
 }
 
 rows = [
@@ -37,15 +37,16 @@ rows = [
             ('background-color', 'black'),
             ('color', 'white'),
             ('border', '1px solid green'),
-            ('text-align', 'center')
-        ]
+            ('text-align', 'center'),
+        ],
     },
     alternate_rows,
     {
         'selector': 'td',
         'props': [
             ('border-left', 'none'),
-            ('border-right', 'none')
-        ]
+            ('border-right', 'none'),
+            ('text-align', 'center'),
+        ],
     }
 ]
