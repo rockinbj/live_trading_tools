@@ -5,9 +5,9 @@ import importlib
 
 # ↓↓↓以下需配置↓↓↓
 # 实盘config文件的绝对路径
-file_of_live_config = r"D:\Code\alpha_v7.0.5\src_product\config.py"
+file_of_live_config = r"xxx/config.py"
 # 实盘交易所文件的绝对路径
-file_of_exchange_config = r"D:\Code\alpha_v7.0.5\src_product\exchangeConfig.py"
+file_of_exchange_config = r"xxx/exchangeConfig.py"
 # ↑↑↑以上需配置↑↑↑
 
 path_of_live_config, filename_of_live_config = os.path.split(file_of_live_config)

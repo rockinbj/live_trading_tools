@@ -315,7 +315,7 @@ def sendReport(*args):
     # 插入 策略配置 等信息
     msg += f"#### 页面杠杆 : {PAGE_LEVERAGE}\n"
     msg += f"#### 资金上限 : {MAX_BALANCE * 100}%\n"
-    msg += f"#### 实际杠杆 : {round(PAGE_LEVERAGE * MAX_BALANCE, 2)}\n"
+    msg += f"#### 实际杠杆 : {round(REAL_LEVERAGE, 1)}\n"
     msg += f"#### 因子名称 : {FACTOR_NAME}\n"
     msg += f"#### 因子参数 : {FACTOR_PARAMS}\n"
 
