@@ -1,3 +1,4 @@
+import sys
 import time
 
 from my_functions import *
@@ -32,6 +33,9 @@ def main():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2 and sys.argv[1] == "--test":
+        TEST_REPORT = True
+
     while True:
         try:
             main()
