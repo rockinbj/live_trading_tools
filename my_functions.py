@@ -284,7 +284,7 @@ def sendReport(*args):
             },
             inplace=True,
         )
-        pos.sort_values(by="盈亏幅度", ascending=False, inplace=True)
+        pos.sort_values(by=["持仓方向", "盈亏幅度"], ascending=[True, False], inplace=True)
 
         table_pic_file = DATA_PATH / 'dataframe_image.jpg'
         pos_copy = pos.reset_index().rename(columns={"symbol": "持仓币种"})

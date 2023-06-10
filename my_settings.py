@@ -1,6 +1,7 @@
 import sys
 import os
 import importlib
+from pathlib import Path
 
 
 # ↓↓↓以下需配置↓↓↓
@@ -38,8 +39,9 @@ IMG_TOKEN = _exchange.IMG_TOKEN
 SMOOTH_LINE = True
 CALL_ALARM = False
 REPORT_INTERVAL = "30m"
-DB_PATH = "data/db_files"
-LOG_PATH = "data/logs"
+ROOT_PATH = Path(__file__).resolve().parent
+DB_PATH = str(ROOT_PATH / "data/db_files")
+LOG_PATH = str(ROOT_PATH / "data/logs")
 LOG_LEVEL_CONSOLE = "debug"
 LOG_LEVEL_FILE = "debug"
 
