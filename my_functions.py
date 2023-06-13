@@ -141,7 +141,16 @@ def getBalance(exchange, asset="usdt"):
     return bal
 
 
-def closePositionForce(exchange, markets, openPositions, symbol=None):
+def closePositionForce(exchange, markets, openPositions, symbol=None, close_pct=1.0):
+    """
+
+    :param exchange:
+    :param markets:
+    :param openPositions:
+    :param symbol:
+    :param close_pct: 平掉多少仓位，0.2即平掉20%的仓位，默认1.0全平
+    :return:
+    """
     # 如果没有symbol参数, 清空所有持仓, 如果有symbol只平仓指定币种
     for s, pos in openPositions.iterrows():
         if symbol is not None and s != symbol: continue
@@ -150,7 +159,7 @@ def closePositionForce(exchange, markets, openPositions, symbol=None):
             "symbol": symbolId,
             "side": "SELL" if pos["side"]=="long" else "BUY",
             "type": "MARKET",
-            "quantity": pos["contracts"],
+            "quantity": pos["contracts"] * close_pct,
             "reduceOnly": True,
         }
 
