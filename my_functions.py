@@ -160,7 +160,7 @@ def closePositionForce(exchange, markets, openPositions, symbol=None, close_pct=
             "symbol": symbolId,
             "side": "SELL" if pos["side"]=="long" else "BUY",
             "type": "MARKET",
-            "quantity": exchange.amoutToPrecision(symbol, pos["contracts"] * close_pct),
+            "quantity": exchange.amount_to_precision(symbol, pos["contracts"] * close_pct),
             "reduceOnly": True,
         }
 
