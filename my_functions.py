@@ -165,6 +165,7 @@ def closePositionForce(exchange, markets, openPositions, symbol=None, close_pct=
         }
 
         retryy(exchange.fapiPrivatePostOrder, critical=True, params=para)
+        time.sleep(0.3)
 
 
 def loadDataFromExchange(exchange):
