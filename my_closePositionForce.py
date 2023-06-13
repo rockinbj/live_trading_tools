@@ -1,3 +1,5 @@
+import sys
+
 from my_functions import *
 
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
@@ -22,10 +24,16 @@ print(f"当前持仓情况:\n{pos}\n")
 bal = getBalance(ex, asset="USDT")
 print(f"当前余额:\n{bal}\n")
 
+close_pct = 1.0
+
+if len(sys.argv) == 3 and isinstance(sys.argv[2], float):
+    close_pct = sys.argv[2]
+    del sys.argv[2]
+
 if len(sys.argv) == 2:
     if "--close" == sys.argv[1]:
         print(f"\n\n\n正在执行清仓操作......\n")
-        closePositionForce(ex, mkts, pos)
+        closePositionForce(exchange=ex, markets=mkts, openPositions=pos, close_pct=close_pct)
 
         pos = getOpenPosition(ex)
         pos = pos[
@@ -39,7 +47,7 @@ if len(sys.argv) == 2:
     elif "--close=" in sys.argv[1]:
         symbol = sys.argv[1].replace("--close=", "")
         print(f"\n\n\n正在执行{symbol}的平仓操作.....\n")
-        closePositionForce(ex, mkts, pos, symbol)
+        closePositionForce(exchange=ex, markets=mkts, openPositions=pos, symbol=symbol, close_pct=close_pct)
 
         pos = getOpenPosition(ex)
         pos = pos[
