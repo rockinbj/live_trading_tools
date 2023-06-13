@@ -149,7 +149,7 @@ def closePositionForce(exchange, markets, openPositions, symbol=None, close_pct=
     :param markets:
     :param openPositions:
     :param symbol:
-    :param close_pct: 平掉多少仓位，0.2即平掉20%的仓位，默认1.0全平
+    :param close_pct: 平掉多少仓位，0.2即平掉20%的仓位，默认1.0全平，注意：计算百分比之后也会按照精度要求下单
     :return:
     """
     # 如果没有symbol参数, 清空所有持仓, 如果有symbol只平仓指定币种
@@ -160,7 +160,7 @@ def closePositionForce(exchange, markets, openPositions, symbol=None, close_pct=
             "symbol": symbolId,
             "side": "SELL" if pos["side"]=="long" else "BUY",
             "type": "MARKET",
-            "quantity": pos["contracts"] * close_pct,
+            "quantity": exchange.amoutToPrecision(symbol, pos["contracts"] * close_pct),
             "reduceOnly": True,
         }
 
