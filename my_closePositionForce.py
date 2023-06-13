@@ -11,7 +11,7 @@ pd.set_option("display.unicode.east_asian_width", True)
 
 print("如果需要清仓, 请加入'--close'参数")
 print("如果需要平仓指定币种, 请加入'--close=symbol'参数, 例如--close=ETH/USDT，仓位全平")
-print("如果需要平仓指定比例, 请加入 比例 参数, 例如--close=ETH/USDT 0.5 即平ETH的50%仓位")
+print("如果需要平仓指定比例, 请加入 比例 参数, 例如--close=ETH/USDT 0.5 即平ETH的 50% 仓位")
 print("\n")
 
 ex = getattr(ccxt, EXCHANGE_ID)(EXCHANGE_CONFIG)
@@ -28,7 +28,7 @@ print(f"当前余额:\n{bal}\n")
 close_pct = 1.0
 
 if len(sys.argv) == 3 and is_float(sys.argv[2]):
-    close_pct = sys.argv[2]
+    close_pct = float(sys.argv[2])
     del sys.argv[2]
 
 if len(sys.argv) == 2:
