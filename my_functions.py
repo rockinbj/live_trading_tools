@@ -1,3 +1,4 @@
+import re
 import time
 import datetime as dt
 from pathlib import Path
@@ -604,3 +605,7 @@ def getAccountBalance(exchange):
     except Exception as e:
         logger.exception(e)
         sendAndPrintError(f"{RUN_NAME}: getAccountBalance()错误: {e}")
+
+
+def is_float(value):
+    return re.match(r'^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$', value)
