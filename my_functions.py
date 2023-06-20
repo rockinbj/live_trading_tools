@@ -1,7 +1,6 @@
 import re
 import time
 import datetime as dt
-from pathlib import Path
 import base64
 from random import randint
 
@@ -504,31 +503,23 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     plt.plot(_dt, index_df['close'], color='tab:green', label=f"Index: {(index_df.iloc[-1]['close']):.4f}")
     plt.plot(_dt, index_df['ma_short'], color='yellow', label=f"Fast{len_short}: {(index_df.iloc[-1]['ma_short']):.4f}")
     plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Slow{len_long}: {(index_df.iloc[-1]['ma_long']):.4f}")
+    plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Bias: {(index_df.iloc[-1]['BIAS']):.4f}")
     plt.title(f'{index_name} Index', fontsize=20, color="white")
 
-    last_bias = index_df.iloc[-1]['BIAS']
-    bias_label = f"Current BIAS: {last_bias:.3f}"
-    plt.legend([f"Index: {(index_df.iloc[-1]['close']):.4f}", f"Fast{len_short}: {(index_df.iloc[-1]['ma_short']):.4f}",
-                f"Slow{len_long}: {(index_df.iloc[-1]['ma_long']):.4f}", bias_label],
-               loc='center left', facecolor='black', edgecolor='white', labelcolor="white", bbox_to_anchor=(0.02, 0.09))
+    plt.legend(loc='center left', facecolor='black', edgecolor='white', labelcolor="white", bbox_to_anchor=(0.02, 0.09))
 
     plt.tick_params(axis='both', colors='white')
     plt.gca().set_facecolor('black')
     plt.gca().spines['bottom'].set_color('white')
     plt.gca().spines['left'].set_color('white')
-    # plt.gca().spines['top'].set_color('white')
-    # plt.gca().spines['right'].set_color('white')
+    plt.gca().spines['top'].set_color('white')
+    plt.gca().spines['right'].set_color('white')
 
     # 填充Fast和Slow之间的区域
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
                      where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.3)
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
                      where=index_df['ma_short'] <= index_df['ma_long'], color='darkred', alpha=0.26)
-
-    # 在Fast末端添加BIAS数值
-    last_bias = index_df.iloc[-1]['BIAS']
-    plt.annotate(f"Current BIAS: {last_bias:.3f}", xy=(_dt.iloc[-1], index_df.iloc[-1]['ma_short']),
-                 xytext=(-160, 0), textcoords='offset points', fontsize=8, color='white')
 
     fileName = DATA_PATH / "index_pic.jpg"
     logger.debug(f"保存 指数图 {fileName}")
