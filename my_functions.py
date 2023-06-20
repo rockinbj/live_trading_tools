@@ -17,6 +17,7 @@ from my_settings import *
 from my_logger import *
 from styler_css import *
 
+pd.options.mode.chained_assignment = None
 logger = logging.getLogger("app.func")
 DATA_PATH = Path(DB_PATH)
 
@@ -508,7 +509,7 @@ def draw_indexcta_pic(index_file="", len_short=0, len_long=0):
     plt.plot(_dt, index_df['ma_short'], color='yellow', label=f"Fast({len_short}): {(index_df.iloc[-1]['ma_short']):.4f}")
     plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Slow({len_long}): {(index_df.iloc[-1]['ma_long']):.4f}")
     plt.title(f'{Path(index_file).stem} Index', fontsize=20, color="white")
-    plt.legend(loc='center right', facecolor='black', edgecolor='white', labelcolor="white",
+    plt.legend(loc='center left', facecolor='black', edgecolor='white', labelcolor="white",
               bbox_to_anchor=(0.96, 0.09))
     plt.tick_params(axis='both', colors='white')
     plt.gca().set_facecolor('black')
