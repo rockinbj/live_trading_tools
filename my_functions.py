@@ -249,7 +249,11 @@ def saveDataToFile(unPnl, equity, positions):
 
 
 def sendReport(*args):
-    [unPnl, equity, posOri, picUrl] = args
+    if len(args) == 4:
+        [unPnl, equity, posOri, picUrl] = args
+    elif len(args) == 5:
+        [unPnl, equity, posOri, picUrl, index_pic_url] = args
+
     pos = posOri.copy()
 
     logger.debug("开始生成报告")
@@ -258,7 +262,11 @@ def sendReport(*args):
     msg += f"#### 账户盈亏 : {unPnl:.1f}U\n"
 
     # 插入 资金曲线 图
-    msg += f"![equityPic.png]({picUrl})\n"
+    msg += f"![equityPic.jpg]({picUrl})\n"
+
+    # 插入 指数图
+    if "index_pic_url" in locals():
+        msg += f"![index_pic.jpg]({index_pic_url})\n"
 
     # 绘制持仓信息表格
     msg += f"#### 持仓信息 :\n"
@@ -281,7 +289,7 @@ def sendReport(*args):
         pos["datetime"] = pd.to_datetime(pos["datetime"]) + dt.timedelta(hours=8)
         pos["datetime"] = pos["datetime"].dt.floor("s")
 
-        pos.rename(
+        pos = pos.rename(
             columns={
                 "side": "持仓方向",
                 "notional": "持仓价值(U)",
@@ -293,9 +301,8 @@ def sendReport(*args):
                 "datetime": "开仓时间",
                 "leverage": "页面杠杆",
             },
-            inplace=True,
         )
-        pos.sort_values(by=["持仓方向", "盈亏幅度"], ascending=[True, False], inplace=True)
+        pos = pos.sort_values(by=["持仓方向", "盈亏幅度"], ascending=[True, False])
 
         table_pic_file = DATA_PATH / 'dataframe_image.jpg'
         pos_copy = pos.reset_index().rename(columns={"symbol": "持仓币种"})
@@ -384,6 +391,7 @@ def drawPic(equityFile, posFile):
     sma_len = 8 if SMOOTH_LINE else 1  # 曲线平滑度
     # 画资金曲线
     eq = eqDf["equity"].rolling(sma_len, min_periods=1).mean()  # 曲线平滑
+
     fig, ax = plt.subplots(figsize=(15, 10), facecolor='black')
     # ax.plot(eqDf["saveTime"], eqDf["equity"], color="tab:green", label="资金(左Y轴)")
     ax.plot(eqDf["saveTime"], eq, color="tab:green", label="资金(左Y轴)")
@@ -475,6 +483,49 @@ def drawPic(equityFile, posFile):
     logger.debug(f"保存资金曲线图片 {fileName}")
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     # plt.show()
+    plt.close()
+
+    return fileName
+
+
+def draw_indexcta_pic(index_file="", len_short=0, len_long=0):
+    if not index_file:
+        return
+
+    # 读取指数csv文件，生成指数和ma数据
+    index_df = pd.read_csv(index_file, encoding='gbk', parse_dates=['candle_begin_time'])
+    index_df.drop_duplicates(subset=['candle_begin_time'], keep='last', inplace=True)
+    index_df.sort_values('candle_begin_time', inplace=True)
+    index_df['资金曲线'] = (index_df['涨跌幅'] + 1).cumprod()  # 计算资金曲线
+    index_df['close'] = index_df['资金曲线']  # 使用当前指数的资金曲线作为close
+    index_df['ma_long'] = index_df['close'].rolling(len_long, min_periods=1).mean()
+    index_df['ma_short'] = index_df['close'].rolling(len_short, min_periods=1).mean()
+
+    # 画图
+    _dt = index_df["candle_begin_time"]
+    plt.figure(figsize=(15, 10), facecolor='black')
+    plt.plot(_dt, index_df['close'], color='tab:green', label=f"Index: {(index_df.iloc[-1]['close']):.4f}")
+    plt.plot(_dt, index_df['ma_short'], color='yellow', label=f"Fast({len_short}): {(index_df.iloc[-1]['ma_short']):.4f}")
+    plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Slow({len_long}): {(index_df.iloc[-1]['ma_long']):.4f}")
+    plt.title(f'{Path(index_file).stem} Index', fontsize=20, color="white")
+    plt.legend(loc='center right', facecolor='black', edgecolor='white', labelcolor="white",
+              bbox_to_anchor=(0.96, 0.09))
+    plt.tick_params(axis='both', colors='white')
+    plt.gca().set_facecolor('black')
+    plt.gca().spines['bottom'].set_color('white')
+    plt.gca().spines['left'].set_color('white')
+    # plt.gca().spines['top'].set_color('white')
+    # plt.gca().spines['right'].set_color('white')
+
+    # 填充Fast和Slow之间的区域
+    plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
+                     where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.3)
+    plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
+                     where=index_df['ma_short'] <= index_df['ma_long'], color='darkred', alpha=0.26)
+
+    fileName = DATA_PATH / "index_pic.jpg"
+    logger.debug(f"保存 指数图 {fileName}")
+    plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
 
     return fileName

@@ -2,6 +2,7 @@ import sys
 import time
 
 from my_functions import *
+from my_settings import _config
 
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
 pd.set_option('display.max_rows', 100)
@@ -15,9 +16,18 @@ def runReporter(exchange):
     unPnl, equity, accountPositions = loadDataFromExchange(exchange)
     equityFile, positionFile = saveDataToFile(unPnl, equity, accountPositions)
 
-    picFile = drawPic(equityFile, positionFile)
-    picUrl = uploadPic(picFile)
-    sendReport(unPnl, equity, accountPositions, picUrl)
+    equityPicFile = drawPic(equityFile, positionFile)
+    equityPicUrl = uploadPic(equityPicFile)
+
+    if name_of_index:
+        index_pic_file = draw_indexcta_pic(file_of_index_cta_csv,
+                                           len_short=_config.account_config[name_of_index]["strategy"]["para"][0],
+                                           len_long=_config.account_config[name_of_index]["strategy"]["para"][1],
+                                           )
+        index_pic_url = uploadPic(index_pic_file)
+        sendReport(unPnl, equity, accountPositions, equityPicUrl, index_pic_url)
+    else:
+        sendReport(unPnl, equity, accountPositions, equityPicUrl)
 
 
 def main():
