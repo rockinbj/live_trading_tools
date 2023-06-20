@@ -21,6 +21,7 @@ def runReporter(exchange):
 
     if name_of_index:
         index_pic_file = draw_indexcta_pic(file_of_index_cta_csv,
+                                           index_name=f"{name_of_index}",
                                            len_short=_config.account_config[name_of_index]["strategy"]["para"][0],
                                            len_long=_config.account_config[name_of_index]["strategy"]["para"][1],
                                            )

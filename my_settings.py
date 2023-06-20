@@ -13,8 +13,8 @@ file_of_exchange_config = r"xxx/exchangeConfig.py"
 # 指数择时专用：指数名称，指数实盘框架中，config.py中account_config里配置的名称，如：TrashBox01
 # 指数名称 留空 则不画图：
 name_of_index = ""
-# 如果需要画指数择时的信号图，需要指明 指数文件路径
-file_of_index_cta_csv = r"xxx/GameFi.csv"
+# 如果需要画指数择时的信号图，需要指明 指数实盘的signal保存的数据文件，如/root/index-cta/data/index_signal_data_MA.csv
+file_of_index_cta_csv = r"xxx/index_signal_data_MA.csv"
 # ↑↑↑以上需配置↑↑↑
 
 path_of_live_config, filename_of_live_config = os.path.split(file_of_live_config)
