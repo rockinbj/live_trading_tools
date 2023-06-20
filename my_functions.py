@@ -496,6 +496,7 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     index_df = pd.read_csv(index_file, encoding='gbk', parse_dates=['candle_begin_time'])
     index_df.drop_duplicates(subset=['candle_begin_time'], keep='last', inplace=True)
     index_df.sort_values('candle_begin_time', inplace=True)
+    index_df = index_df[-2200:]
 
     # 画图
     _dt = index_df["candle_begin_time"]
