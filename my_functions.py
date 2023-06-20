@@ -503,7 +503,7 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     plt.plot(_dt, index_df['close'], color='tab:green', label=f"Index: {(index_df.iloc[-1]['close']):.4f}", linewidth=2)
     plt.plot(_dt, index_df['ma_short'], color='yellow', label=f"Fast{len_short}: {(index_df.iloc[-1]['ma_short']):.4f}", linewidth=1)
     plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Slow{len_long}: {(index_df.iloc[-1]['ma_long']):.4f}", linewidth=1)
-    plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Bias: {(index_df.iloc[-1]['BIAS']):.4f}")
+    plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Bias: {(index_df.iloc[-1]['BIAS']):.1%}")
     plt.title(f'{index_name} Index', fontsize=20, color="white")
 
     plt.legend(loc='center left', facecolor='black', edgecolor='white', labelcolor="white", bbox_to_anchor=(0.02, 0.09))
