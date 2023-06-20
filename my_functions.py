@@ -517,9 +517,9 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
 
     # 填充Fast和Slow之间的区域
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
-                     where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.3)
+                     where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.4)
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
-                     where=index_df['ma_short'] <= index_df['ma_long'], color='darkred', alpha=0.26)
+                     where=index_df['ma_short'] <= index_df['ma_long'], color='darkred', alpha=0.3)
 
     fileName = DATA_PATH / "index_pic.jpg"
     logger.debug(f"保存 指数图 {fileName}")
