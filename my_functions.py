@@ -482,7 +482,7 @@ def drawPic(equityFile, posFile):
     fileName = DATA_PATH / "equityPic.jpg"
     logger.debug(f"保存 资金曲线 图片 {fileName}")
     if fileName.exists():
-        logger.debug(f"{fileName} 已存在，删除再保存")
+        logger.debug(f"图片 已存在，先删除 再保存 {fileName}")
         os.remove(fileName)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
@@ -527,7 +527,7 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     fileName = DATA_PATH / "index_pic.jpg"
     logger.debug(f"保存 指数图 {fileName}")
     if fileName.exists():
-        logger.debug(f"{fileName} 已存在，删除再保存")
+        logger.debug(f"图片 已存在，先删除 再保存 {fileName}")
         os.remove(fileName)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
