@@ -554,9 +554,12 @@ def upload_pic_smms(file, error_pic):
         if r["success"]:
             img_link = r["data"]["url"]
             logger.debug(f"上传图片成功: {img_link}")
+        elif r["success"] is False and r["code"] == "image_repeated":
+            img_link = r["images"]
+            logger.debug(f"图片 没有变化，使用 旧图 {img_link}")
         else:
             img_link = error_pic
-            logger.warning(f"图片上传失败, 用error_pic代替")
+            logger.warning(f"图片上传失败, 用error_pic代替 {error_pic}")
             logger.warning(r)
     except Exception as e:
         logger.error(f"{res.text}")
