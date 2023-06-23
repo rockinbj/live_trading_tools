@@ -24,6 +24,7 @@ def runReporter(exchange):
                                            index_name=f"{name_of_index}",
                                            len_short=_config.account_config[name_of_index]["strategy"]["para"][0],
                                            len_long=_config.account_config[name_of_index]["strategy"]["para"][1],
+                                           bias=True
                                            )
         index_pic_url = uploadPic(index_pic_file)
         sendReport(unPnl, equity, accountPositions, equityPicUrl, index_pic_url)

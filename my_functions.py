@@ -480,9 +480,8 @@ def drawPic(equityFile, posFile):
     ax2.spines['right'].set_color('white')
 
     fileName = DATA_PATH / "equityPic.jpg"
-    logger.debug(f"保存资金曲线图片 {fileName}")
+    logger.debug(f"保存 资金曲线 图片 {fileName}")
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
-    # plt.show()
     plt.close()
 
     return fileName
@@ -504,7 +503,7 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     plt.plot(_dt, index_df['close'], color='tab:green', label=f"Index: {(index_df.iloc[-1]['close']):.4f}", linewidth=2)
     plt.plot(_dt, index_df['ma_short'], color='yellow', label=f"Fast{len_short}: {(index_df.iloc[-1]['ma_short']):.4f}", linewidth=1)
     plt.plot(_dt, index_df['ma_long'], color='orange', label=f"Slow{len_long}: {(index_df.iloc[-1]['ma_long']):.4f}", linewidth=1)
-    plt.plot(_dt, index_df['ma_long'], color='black', label=f"Bias: {(index_df.iloc[-1]['BIAS']):.1%}", linewidth=0)
+    if bias: plt.plot(_dt, index_df['ma_long'], color='black', label=f"Bias: {(index_df.iloc[-1]['BIAS']):.1%}", linewidth=0)
     plt.title(f'{index_name} Index', fontsize=20, color="white")
 
     plt.legend(loc='center left', facecolor='black', edgecolor='white', labelcolor="white", bbox_to_anchor=(0.02, 0.09))
@@ -538,7 +537,8 @@ def uploadPic(fileName):
 def upload_pic_smms(file, error_pic):
     headers = {"Authorization": IMG_TOKEN}
     files = {"smfile": open(file, "rb")}
-    url = "https://smms.app/api/v2/upload"
+    url_api_root = "https://sm.ms/api/v2"
+    url = url_api_root + "/upload"
 
     try:
         res = requests.post(url, files=files, headers=headers)
@@ -556,7 +556,6 @@ def upload_pic_smms(file, error_pic):
         logger.warning(f"图片上传失败, 用error_pic代替")
         logger.exception(e)
 
-    # img_link = error_pic
     return img_link
 
 
