@@ -481,6 +481,9 @@ def drawPic(equityFile, posFile):
 
     fileName = DATA_PATH / "equityPic.jpg"
     logger.debug(f"保存 资金曲线 图片 {fileName}")
+    if fileName.exists():
+        logger.debug(f"{fileName} 已存在，删除再保存")
+        os.remove(fileName)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
 
@@ -517,12 +520,15 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
 
     # 填充Fast和Slow之间的区域
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
-                     where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.4)
+                     where=index_df['ma_short'] > index_df['ma_long'], color='darkgreen', alpha=0.5)
     plt.fill_between(_dt, index_df['ma_short'], index_df['ma_long'],
                      where=index_df['ma_short'] <= index_df['ma_long'], color='darkred', alpha=0.3)
 
     fileName = DATA_PATH / "index_pic.jpg"
     logger.debug(f"保存 指数图 {fileName}")
+    if fileName.exists():
+        logger.debug(f"{fileName} 已存在，删除再保存")
+        os.remove(fileName)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
 
