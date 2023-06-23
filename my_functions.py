@@ -484,6 +484,7 @@ def drawPic(equityFile, posFile):
     if fileName.exists():
         logger.debug(f"图片 已存在，先删除 再保存 {fileName}")
         os.remove(fileName)
+        time.sleep(0.1)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
 
@@ -529,6 +530,7 @@ def draw_indexcta_pic(index_file="", index_name="", len_short="", len_long="", b
     if fileName.exists():
         logger.debug(f"图片 已存在，先删除 再保存 {fileName}")
         os.remove(fileName)
+        time.sleep(0.1)
     plt.savefig(fileName, bbox_inches='tight', dpi=200)
     plt.close()
 
